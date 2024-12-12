@@ -71,7 +71,7 @@ export default function MetaSearchPage() {
       <div className="container mx-auto px-4 py-4">
         {/* Search Form */}
         <div className="bg-white shadow-sm border rounded-lg p-4 mb-4">
-          <div className="flex gap-3 mb-3">
+          <div className="flex flex-col sm:flex-row gap-3 mb-3">
             <Input
               type="text"
               placeholder="Search crypto insights..."
@@ -83,7 +83,7 @@ export default function MetaSearchPage() {
               value={filters.timeRange}
               onValueChange={(value: string) => setFilters({ ...filters, timeRange: value })}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Select time range" />
               </SelectTrigger>
               <SelectContent>
@@ -94,7 +94,7 @@ export default function MetaSearchPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button>Search</Button>
+            <Button className="w-full sm:w-auto">Search</Button>
           </div>
 
           {/* Source filters */}
@@ -133,10 +133,12 @@ export default function MetaSearchPage() {
 
         {/* Results Grid */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Results list - takes full width when no selection, 3 columns when selected */}
+          {/* Results list */}
           <div 
             className={`${
-              selectedResult ? 'col-span-3' : 'col-span-12'
+              selectedResult 
+                ? 'col-span-12 lg:col-span-3 hidden lg:block' 
+                : 'col-span-12'
             } bg-white shadow-sm border rounded-lg h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300`}
           >
             {filteredResults.length > 0 ? (
@@ -175,9 +177,9 @@ export default function MetaSearchPage() {
             )}
           </div>
 
-          {/* Content - only shown when result is selected */}
+          {/* Content */}
           {selectedResult && (
-            <div className="col-span-9 bg-white shadow-sm border rounded-lg p-6 h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300">
+            <div className="col-span-12 lg:col-span-9 bg-white shadow-sm border rounded-lg p-6 h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300">
               <div>
                 <a 
                   href="#"
@@ -185,7 +187,7 @@ export default function MetaSearchPage() {
                     e.preventDefault()
                     setSelectedResult(null)
                   }}
-                  className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 mb-4"
+                  className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 mb-4 lg:hidden"
                 >
                   ← Back to results
                 </a>
@@ -201,7 +203,7 @@ export default function MetaSearchPage() {
                   <h2 className="text-xl font-semibold">{selectedResult.title}</h2>
                 </div>
                 <p className="text-gray-800 mb-4">{selectedResult.content}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                   <span>{new Date(selectedResult.timestamp).toLocaleString()}</span>
                   {selectedResult.metadata.likes && (
                     <span>👍 {selectedResult.metadata.likes}</span>
