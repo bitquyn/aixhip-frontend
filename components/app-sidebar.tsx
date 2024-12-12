@@ -2,22 +2,15 @@
 
 import * as React from "react"
 import Image from "next/image"
+import Link from "next/link"
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
   LifeBuoy,
-  Map,
-  PieChart,
   Send,
-  Settings2,
-  SquareTerminal,
   Search,
   BarChart2,
   Bell,
   Coins,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react"
 
 import { NavMain } from "./nav-main"
@@ -82,7 +75,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/">
                 <div className="flex size-8 items-center justify-center rounded-full">
                   <Image src="/logo.png" alt="logo" width="40" height="40"/>
            
@@ -91,7 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-bold">aixhip</span>
                   <span className="truncate text-xs font-mono">growllllllllll</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
