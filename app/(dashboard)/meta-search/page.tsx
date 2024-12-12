@@ -70,7 +70,7 @@ export default function MetaSearchPage() {
     <div>
       <div className="container mx-auto px-4 py-4">
         {/* Search Form */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 rounded-lg p-4 mb-4">
+        <div className="bg-card shadow-sm border border-foreground/1 rounded-lg p-4 mb-4">
           <div className="flex flex-col sm:flex-row gap-3 mb-3">
             <Input
               type="text"
@@ -139,7 +139,7 @@ export default function MetaSearchPage() {
               selectedResult 
                 ? 'col-span-12 lg:col-span-3 hidden lg:block' 
                 : 'col-span-12'
-            } bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 rounded-lg h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300`}
+            } bg-card shadow-sm border border-foreground/1 rounded-lg h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300`}
           >
             {filteredResults.length > 0 ? (
               filteredResults.map((result: InsightResult) => {
@@ -147,8 +147,8 @@ export default function MetaSearchPage() {
                 return (
                   <div
                     key={result.id}
-                    className={`p-3 border-b dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                      selectedResult?.id === result.id ? "bg-blue-50 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800" : ""
+                    className={`p-3 border-b dark:border-gray-700 cursor-pointer hover:bg-gray-800  ${
+                      selectedResult?.id === result.id ? "bg-foreground/5 border-foreground/1" : ""
                     }`}
                     onClick={() => setSelectedResult(result)}
                   >
@@ -179,7 +179,7 @@ export default function MetaSearchPage() {
 
           {/* Content */}
           {selectedResult && (
-            <div className="col-span-12 lg:col-span-9 bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 rounded-lg p-6 h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300">
+            <div className="col-span-12 lg:col-span-9 bg-card shadow-sm border border-foreground/1 rounded-lg p-6 h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300">
               <div>
                 <a 
                   href="#"
