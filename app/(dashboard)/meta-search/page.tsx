@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -11,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { mockResults, mockSources, timeRangeOptions } from "@/mock-data"
-import type { SearchFilters, InsightResult } from "@/types"
+import type { SearchFilters, InsightResult, InsightSource } from "@/types"
 
 export default function MetaSearchPage() {
   const [filters, setFilters] = useState<SearchFilters>({
@@ -24,7 +25,7 @@ export default function MetaSearchPage() {
 
   // Filter results based on search criteria
   const filteredResults = useMemo(() => {
-    return mockResults.filter(result => {
+    return mockResults.filter((result: InsightResult) => {
       // Filter by search query
       if (filters.query) {
         const searchText = filters.query.toLowerCase()
@@ -86,7 +87,7 @@ export default function MetaSearchPage() {
                 <SelectValue placeholder="Select time range" />
               </SelectTrigger>
               <SelectContent>
-                {timeRangeOptions.map((option) => (
+                {timeRangeOptions.map((option: { value: string; label: string }) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -105,19 +106,25 @@ export default function MetaSearchPage() {
             >
               All Sources
             </Button>
-            {mockSources.map((source) => (
+            {mockSources.map((source: InsightSource) => (
               <Button
                 key={source.id}
                 variant={filters.sources.includes(source.id) ? "default" : "outline"}
                 size="sm"
                 onClick={() => {
                   const newSources = filters.sources.includes(source.id)
-                    ? filters.sources.filter((s) => s !== source.id)
-                    : [...filters.sources.filter((s) => s !== "all"), source.id]
+                    ? filters.sources.filter((s: string) => s !== source.id)
+                    : [...filters.sources.filter((s: string) => s !== "all"), source.id]
                   setFilters({ ...filters, sources: newSources })
                 }}
               >
-                <span className="mr-1">{source.icon}</span>
+                <Image
+                  src={source.icon}
+                  alt={source.name}
+                  width={16}
+                  height={16}
+                  className="mr-1"
+                />
                 {source.name}
               </Button>
             ))}
@@ -133,8 +140,8 @@ export default function MetaSearchPage() {
             } bg-white shadow-sm border rounded-lg h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300`}
           >
             {filteredResults.length > 0 ? (
-              filteredResults.map((result) => {
-                const source = mockSources.find((s) => s.id === result.sourceId)
+              filteredResults.map((result: InsightResult) => {
+                const source = mockSources.find((s: InsightSource) => s.id === result.sourceId)
                 return (
                   <div
                     key={result.id}
@@ -144,7 +151,14 @@ export default function MetaSearchPage() {
                     onClick={() => setSelectedResult(result)}
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      <span>{source?.icon}</span>
+                      {source && (
+                        <Image
+                          src={source.icon}
+                          alt={source.name}
+                          width={16}
+                          height={16}
+                        />
+                      )}
                       <span className="font-medium">{result.title}</span>
                     </div>
                     <p className="text-sm text-gray-600 line-clamp-2">{result.content}</p>
@@ -176,9 +190,14 @@ export default function MetaSearchPage() {
                   ← Back to results
                 </a>
                 <div className="flex items-center gap-2 mb-4">
-                  <span>
-                    {mockSources.find((s) => s.id === selectedResult.sourceId)?.icon}
-                  </span>
+                  {mockSources.find((s: InsightSource) => s.id === selectedResult.sourceId) && (
+                    <Image
+                      src={mockSources.find((s: InsightSource) => s.id === selectedResult.sourceId)!.icon}
+                      alt={mockSources.find((s: InsightSource) => s.id === selectedResult.sourceId)!.name}
+                      width={20}
+                      height={20}
+                    />
+                  )}
                   <h2 className="text-xl font-semibold">{selectedResult.title}</h2>
                 </div>
                 <p className="text-gray-800 mb-4">{selectedResult.content}</p>
