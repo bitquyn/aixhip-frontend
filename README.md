@@ -1,36 +1,216 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AIxhip Frontend
 
-## Getting Started
+## Meta Search Feature
 
-First, run the development server:
+Meta Search is a comprehensive crypto information aggregator that collects and displays data from various sources including Twitter, Telegram, Discord, Reddit, and news outlets.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Features
+
+#### Current Implementation
+- **Real-time Search & Filtering**
+  - Full-text search across titles and content
+  - Time range filtering (5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h, 24h, 3d, 7d)
+  - Source-based filtering with multi-select capability
+  
+- **Interactive UI**
+  - Responsive grid layout
+  - Split view for results and detailed content
+  - Real-time filtering without page reload
+  - Source icons and metadata display
+
+- **Data Display**
+  - Engagement metrics (likes, retweets, replies, views)
+  - Timestamp formatting
+  - Source attribution
+  - Original content links
+
+### Technical Architecture
+
+#### Database Schema
+```sql
+-- Sources table
+CREATE TABLE sources (
+    id VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    icon VARCHAR(10) NOT NULL,
+    color VARCHAR(7) NOT NULL
+);
+
+-- Insights table
+CREATE TABLE insights (
+    id VARCHAR(36) PRIMARY KEY,
+    source_id VARCHAR(50) NOT NULL REFERENCES sources(id),
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    url VARCHAR(512) NOT NULL,
+    timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+    likes INTEGER,
+    retweets INTEGER,
+    replies INTEGER,
+    views INTEGER,
+    sentiment FLOAT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    
+    INDEX idx_source_timestamp (source_id, timestamp),
+    INDEX idx_timestamp (timestamp),
+    FULLTEXT INDEX idx_content_search (title, content)
+);
+
+-- Tags system
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE insight_tags (
+    insight_id VARCHAR(36) REFERENCES insights(id),
+    tag_id INTEGER REFERENCES tags(id),
+    PRIMARY KEY (insight_id, tag_id)
+);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Component Structure
+```
+app/
+└── (dashboard)/
+    └── meta-search/
+        └── page.tsx       # Main Meta Search component
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+components/
+└── ui/
+    ├── button.tsx        # Reusable button component
+    ├── input.tsx         # Search input component
+    └── select.tsx        # Time range selector component
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+lib/
+└── utils.ts             # Utility functions
 
-## Learn More
+types.ts                 # TypeScript interfaces
+mock-data.ts            # Sample data for development
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Data Flow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Data Ingestion**
+   - Backend services collect data from various sources
+   - Data is normalized and stored in the insights table
+   - Metadata (likes, retweets, etc.) is updated periodically
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Search & Filtering**
+   - Client-side filtering using React's useMemo
+   - Time range filtering based on timestamp
+   - Source filtering with multi-select support
+   - Full-text search across title and content
 
-## Deploy on Vercel
+3. **UI Updates**
+   - Real-time updates as filters change
+   - Dynamic grid layout based on selection state
+   - Smooth transitions between views
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### API Integration (For Backend Team)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Expected endpoints:
+```typescript
+// GET /api/insights
+interface GetInsightsParams {
+  query?: string;
+  timeRange?: string;
+  sources?: string[];
+  page?: number;
+  limit?: number;
+}
+
+// GET /api/insights/:id
+interface InsightResponse {
+  id: string;
+  sourceId: string;
+  title: string;
+  content: string;
+  url: string;
+  timestamp: string;
+  metadata: {
+    likes?: number;
+    retweets?: number;
+    replies?: number;
+    views?: number;
+  }
+}
+```
+
+### Setup Instructions
+
+1. Install dependencies:
+```bash
+npm install @radix-ui/react-select class-variance-authority lucide-react tailwind-merge clsx
+```
+
+2. Configure environment:
+```bash
+# .env.local
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+```
+
+### Changelog
+
+#### v0.1.0 (Initial Release)
+- ✨ Implemented basic Meta Search interface
+- 🎨 Added UI components (Button, Input, Select)
+- 📊 Created database schema
+- 🔍 Implemented search and filtering
+- 📱 Added responsive layout
+- 🧪 Added mock data for testing
+
+### Future Enhancements
+
+1. **Phase 1 - Core Features**
+   - [ ] Real-time data updates
+   - [ ] Advanced filtering options
+   - [ ] Sentiment analysis integration
+   - [ ] Pagination support
+
+2. **Phase 2 - User Experience**
+   - [ ] Save favorite searches
+   - [ ] Custom time ranges
+   - [ ] Export functionality
+   - [ ] Dark mode support
+
+3. **Phase 3 - Analytics**
+   - [ ] Trending topics
+   - [ ] Source reliability scoring
+   - [ ] User engagement metrics
+   - [ ] Historical data analysis
+
+### Development Guidelines
+
+1. **Coding Standards**
+   - Use TypeScript for type safety
+   - Follow React hooks best practices
+   - Implement proper error handling
+   - Write unit tests for components
+
+2. **Performance Considerations**
+   - Implement virtualization for long lists
+   - Use proper indexing in database
+   - Optimize API calls with caching
+   - Lazy load components when possible
+
+3. **Accessibility**
+   - Follow WCAG guidelines
+   - Implement keyboard navigation
+   - Add proper ARIA labels
+   - Ensure color contrast compliance
+
+### Team Collaboration
+
+- **Frontend Team**: Focus on component development and user experience
+- **Backend Team**: Implement API endpoints and data processing
+- **DevOps**: Set up monitoring and scaling infrastructure
+- **Product**: Define feature priorities and user stories
+
+### Contact
+
+For questions or suggestions:
+- Frontend: [frontend-team@aixhip.com]
+- Backend: [backend-team@aixhip.com]
+- Product: [product-team@aixhip.com]
