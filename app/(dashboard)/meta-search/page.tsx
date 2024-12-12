@@ -70,7 +70,7 @@ export default function MetaSearchPage() {
     <div>
       <div className="container mx-auto px-4 py-4">
         {/* Search Form */}
-        <div className="bg-white shadow-sm border rounded-lg p-4 mb-4">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 rounded-lg p-4 mb-4">
           <div className="flex flex-col sm:flex-row gap-3 mb-3">
             <Input
               type="text"
@@ -139,7 +139,7 @@ export default function MetaSearchPage() {
               selectedResult 
                 ? 'col-span-12 lg:col-span-3 hidden lg:block' 
                 : 'col-span-12'
-            } bg-white shadow-sm border rounded-lg h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300`}
+            } bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 rounded-lg h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300`}
           >
             {filteredResults.length > 0 ? (
               filteredResults.map((result: InsightResult) => {
@@ -147,8 +147,8 @@ export default function MetaSearchPage() {
                 return (
                   <div
                     key={result.id}
-                    className={`p-3 border-b cursor-pointer hover:bg-gray-50 ${
-                      selectedResult?.id === result.id ? "bg-blue-50 border-blue-200" : ""
+                    className={`p-3 border-b dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                      selectedResult?.id === result.id ? "bg-blue-50 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800" : ""
                     }`}
                     onClick={() => setSelectedResult(result)}
                   >
@@ -161,17 +161,17 @@ export default function MetaSearchPage() {
                           height={16}
                         />
                       )}
-                      <span className="font-medium">{result.title}</span>
+                      <span className="font-medium dark:text-gray-100">{result.title}</span>
                     </div>
-                    <p className="text-sm text-gray-600 line-clamp-2">{result.content}</p>
-                    <div className="text-xs text-gray-500 mt-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{result.content}</p>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                       {new Date(result.timestamp).toLocaleString()}
                     </div>
                   </div>
                 )
               })
             ) : (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                 No results found for your search criteria
               </div>
             )}
@@ -179,7 +179,7 @@ export default function MetaSearchPage() {
 
           {/* Content */}
           {selectedResult && (
-            <div className="col-span-12 lg:col-span-9 bg-white shadow-sm border rounded-lg p-6 h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300">
+            <div className="col-span-12 lg:col-span-9 bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 rounded-lg p-6 h-[calc(100vh-280px)] overflow-y-auto transition-all duration-300">
               <div>
                 <a 
                   href="#"
@@ -187,7 +187,7 @@ export default function MetaSearchPage() {
                     e.preventDefault()
                     setSelectedResult(null)
                   }}
-                  className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 mb-4 lg:hidden"
+                  className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 lg:hidden"
                 >
                   ← Back to results
                 </a>
@@ -200,10 +200,10 @@ export default function MetaSearchPage() {
                       height={20}
                     />
                   )}
-                  <h2 className="text-xl font-semibold">{selectedResult.title}</h2>
+                  <h2 className="text-xl font-semibold dark:text-gray-100">{selectedResult.title}</h2>
                 </div>
-                <p className="text-gray-800 mb-4">{selectedResult.content}</p>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                <p className="text-gray-800 dark:text-gray-200 mb-4">{selectedResult.content}</p>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                   <span>{new Date(selectedResult.timestamp).toLocaleString()}</span>
                   {selectedResult.metadata.likes && (
                     <span>👍 {selectedResult.metadata.likes}</span>
@@ -222,7 +222,7 @@ export default function MetaSearchPage() {
                   href={selectedResult.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline text-sm block mt-4"
+                  className="text-blue-500 dark:text-blue-400 hover:underline text-sm block mt-4"
                 >
                   View original post →
                 </a>

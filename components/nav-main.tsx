@@ -1,7 +1,6 @@
 "use client"
 
 import { LucideIcon } from "lucide-react"
-import { ThemeToggle } from "./theme-toggle"
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -47,9 +46,6 @@ export function NavMain({ items }: NavMainProps) {
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
-      <div className="px-4">
-        <ThemeToggle />
-      </div>
     </div>
   )
 }
